@@ -59,7 +59,6 @@ func main() {
 		}
 
 		if !*noEnvPtr {
-			fmt.Println("Setting Fullname:", fullname)
 			err = os.Setenv(fullnameEnvName, fullname)
 			if err != nil {
 				fmt.Errorf("%s", err)

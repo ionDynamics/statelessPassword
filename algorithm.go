@@ -1,3 +1,5 @@
+// Package statelessPassword implements a derived Billemont's algorithm
+// https://en.wikipedia.org/wiki/Master_Password
 package statelessPassword //import "go.iondynamics.net/statelessPassword"
 
 import (
@@ -21,6 +23,7 @@ type Algorithm struct {
 	key            []byte
 }
 
+//New initializes the algorithm with the provided input and precalculates the masterkey
 func New(fullname, masterpassword []byte, variant uint8) *Algorithm {
 	algo := &Algorithm{
 		variant:    variant,
@@ -65,6 +68,7 @@ func New(fullname, masterpassword []byte, variant uint8) *Algorithm {
 	return algo
 }
 
+//Password returns the password for the given website, oassword version and templates
 func (algo *Algorithm) Password(site string, version string, templates []string) (string, error) {
 	if len(templates) < 1 {
 		return "", fmt.Errorf("%s", "invalid template")
