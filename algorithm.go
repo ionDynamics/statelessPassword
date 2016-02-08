@@ -68,7 +68,7 @@ func New(fullname, masterpassword []byte, variant uint8) *Algorithm {
 	return algo
 }
 
-//Password returns the password for the given website, oassword version and templates
+//Password returns the password for the given website, password version and templates
 func (algo *Algorithm) Password(site string, version string, templates []string) (string, error) {
 	if len(templates) < 1 {
 		return "", fmt.Errorf("%s", "invalid template")
