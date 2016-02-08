@@ -4,67 +4,67 @@ import (
 	"fmt"
 )
 
-func Example_V() {
+func Example_TemplateChars_V() {
 	fmt.Println(V)
 	// Output:
 	// AEIOU
 }
 
-func Example_C() {
+func Example_TemplateChars_C() {
 	fmt.Println(C)
 	// Output:
 	// BCDFGHJKLMNPQRSTVWXYZ
 }
 
-func Example_c() {
+func Example_TemplateChars_c() {
 	fmt.Println(c)
 	// Output:
 	// bcdfghjklmnpqrstvwxyz
 }
 
-func Example_v() {
+func Example_TemplateChars_v() {
 	fmt.Println(v)
 	// Output:
 	// aeiou
 }
 
-func Example_A() {
+func Example_TemplateChars_A() {
 	fmt.Println(A)
 	// Output:
 	// AEIOUBCDFGHJKLMNPQRSTVWXYZ
 }
 
-func Example_a() {
+func Example_TemplateChars_a() {
 	fmt.Println(a)
 	// Output:
 	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz
 }
 
-func Example_n() {
+func Example_TemplateChars_n() {
 	fmt.Println(n)
 	// Output:
 	// 0123456789
 }
 
-func Example_o() {
+func Example_TemplateChars_o() {
 	fmt.Println(o)
 	// Output:
 	// @&%?,=[]_:-+*$#!'^~;()/.
 }
 
-func Example_X() {
+func Example_TemplateChars_X() {
 	fmt.Println(X)
 	// Output:
 	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789!@#$%^&*()
 }
 
-func Example_x() {
+func Example_TemplateChars_x() {
 	fmt.Println(x)
 	// Output:
 	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789!@#$%^&*()
 }
 
-func Example_p() {
+func Example_TemplateChars_p() {
 	fmt.Println(p)
 	// Output:
 	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789
