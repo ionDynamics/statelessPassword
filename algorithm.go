@@ -75,9 +75,14 @@ func (algo *algorithm) Init(fullname, masterpassword []byte) error {
 	algo.fullname = fullname
 	algo.saltPrefix = []byte("go.iondynamics.net/statelessPassword")
 
+	b := bytes.Buffer{}
+	b.Write(algo.saltPrefix)
+	b.WriteString(fmt.Sprint(len(algo.fullname)))
+	b.Write(algo.fullname)
+
 	var err error
 	algo.key, err = scrypt.Key(masterpassword,
-		append(algo.saltPrefix, []byte(fmt.Sprint(len(algo.fullname), algo.fullname))...),
+		b.Bytes(),
 		algo.p.N,
 		algo.p.R,
 		algo.p.P,

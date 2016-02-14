@@ -16,7 +16,7 @@ func Example_Preset0() {
 	fmt.Println(err1, err2)
 
 	// Output:
-	// MaweHivr6?Boho <nil>
+	// XopmTegq7&Sizi <nil>
 	//
 	// true
 	// <nil> <nil>
@@ -35,7 +35,7 @@ func Example_Preset1() {
 	fmt.Println(err1, err2)
 
 	// Output:
-	// XIA[LAcRhS=CbF$B;N0^ <nil>
+	// j_Kf6#8:tC+#5u'C-c4$ <nil>
 	//
 	// true
 	// true
@@ -55,7 +55,7 @@ func Example_Preset2() {
 	fmt.Println(err1, err2)
 
 	// Output:
-	// Vfv4Ye3TtsMx74Q0 <nil>
+	// 8dh5hmmiH6oWlnWf <nil>
 	//
 	// false
 	// false
@@ -75,7 +75,7 @@ func Example_Preset3() {
 	fmt.Println(err1, err2)
 
 	// Output:
-	// :FIobQ9nLmMqNyvnzM7x=?LZf <nil>
+	// yJ$#PLnF&y.l$~SR.8&0EBNtG <nil>
 	//
 	// true
 	// true
@@ -95,7 +95,7 @@ func Example_Preset5() {
 	fmt.Println(err1, err2)
 
 	// Output:
-	// [kI0wE,V=z/u#g+ie'[^f/pW7 <nil>
+	// t'$1sX'_OOAyj?qOpR8%q2ryF <nil>
 	//
 	// true
 	// true
@@ -113,7 +113,7 @@ func Example_Preset0_32() {
 	fmt.Println(out2 != out3)
 
 	// Output:
-	// G/q6Mu*_=''oI]+kZ@_*/wsNxJS8/:S[ <nil>
+	// s0tzQE;SLKbjms+JuQ'T.LV%a5r1[N^3 <nil>
 	// <nil>
 	// true
 	// true
