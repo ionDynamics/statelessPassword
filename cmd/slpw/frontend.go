@@ -13,62 +13,72 @@ import (
 	"go.iondynamics.net/statelessPassword"
 )
 
-func getFullname(r *bufio.Reader) string {
+func getFullname(s *bufio.Scanner) string {
 	var fullname string
 	if !*noEnv {
 		fullname = os.Getenv(nameEnv)
 	}
 
 	if fullname == "" {
-		fmt.Println("Enter Full Name:")
+		say("Enter Full Name:")
 
 		var err error
-		fullname, err = r.ReadString('\n')
+		fullname, err = getString(s)
 		if err != nil {
-			fmt.Println(err)
+			say(err)
 			os.Exit(1)
 		}
 
 		if !*noEnv {
 			err = os.Setenv(nameEnv, fullname)
 			if err != nil {
-				fmt.Println(err)
+				say(err)
 				os.Exit(1)
 			}
 		}
 	} else {
-		fmt.Println("Generating passwords for", fullname)
+		say("Generating passwords for", fullname)
 	}
 
 	return strings.TrimSpace(fullname)
 }
 
-func getMasterpassword(r *bufio.Reader) []byte {
-	fmt.Println("Enter Master Password:")
-	bytMasterPw, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+func getMasterpassword(s *bufio.Scanner) []byte {
+	say("Enter Master Password:")
+	var err error
+	var mpw []byte
+
+	if *noTerminal {
+		var str string
+		str, err = getString(s)
+		mpw = []byte(str)
+	} else {
+		mpw, err = terminal.ReadPassword(int(os.Stdin.Fd()))
+	}
+
 	if err != nil {
-		fmt.Println(err)
+		say(err)
 		os.Exit(1)
 	}
-	return bytMasterPw
+	return mpw
 }
 
-func getSite(r *bufio.Reader) (string, bool) {
-	fmt.Println("Enter Site:")
-	site, err := r.ReadString('\n')
+func getSite(s *bufio.Scanner) (string, bool) {
+	say("Enter Site:")
+	site, err := getString(s)
 	if err != nil {
-		fmt.Println(err)
+		say(err)
 		return "", false
 	}
 
 	return strings.TrimSpace(site), true
 }
 
-func getVersion(r *bufio.Reader) (string, bool) {
-	fmt.Println("Enter Password Version (Default 1) :")
-	version, err := r.ReadString('\n')
+func getVersion(s *bufio.Scanner) (string, bool) {
+	say("Enter Password Version (Default 1) :")
+	version, err := getString(s)
 	if err != nil {
-		fmt.Println(err)
+		say(err)
 		return "", false
 	}
 	version = strings.TrimSpace(version)
@@ -79,20 +89,20 @@ func getVersion(r *bufio.Reader) (string, bool) {
 	return version, true
 }
 
-func getTemplates(r *bufio.Reader) ([]string, bool) {
-	fmt.Println("Choose Template:")
-	fmt.Println("1 default) 16 alphanumeric")
-	fmt.Println("2) 20 alphanumeric")
-	fmt.Println("3) 10 alphanumeric")
-	fmt.Println("4) 8 alphanumeric")
-	fmt.Println("5) 16 with special chars")
-	fmt.Println("6) 25 with special chars")
-	fmt.Println("7) 32 with special chars")
-	fmt.Println("8) 4 digit PIN")
+func getTemplates(s *bufio.Scanner) ([]string, bool) {
+	say("Choose Template:")
+	say("1 default) 16 alphanumeric")
+	say("2) 20 alphanumeric")
+	say("3) 10 alphanumeric")
+	say("4) 8 alphanumeric")
+	say("5) 16 with special chars")
+	say("6) 25 with special chars")
+	say("7) 32 with special chars")
+	say("8) 4 digit PIN")
 
 	tpls := statelessPassword.Alphanumeric16Templates
 
-	tplStr, err := r.ReadString('\n')
+	tplStr, err := getString(s)
 	if err != nil {
 		return tpls, false
 	}
@@ -123,20 +133,44 @@ func returnPw(pwch chan string) {
 	case pw := <-pwch:
 		pwd = pw
 	case <-time.After(750 * time.Millisecond):
-		fmt.Println("Generating...")
+		say("Generating...")
 		pwd = <-pwch
+	}
+
+	if *noTerminal {
+		fmt.Print(pwd)
+		return
 	}
 
 	before, err := clipboard.ReadAll()
 	clipboard.WriteAll(pwd)
-	fmt.Println("\nPassword copied to clipboard! ")
+	say("\nPassword copied to clipboard! ")
 	time.Sleep(5 * time.Second)
-	fmt.Println("Cleaning clipboard in 5 seconds...")
+	say("Cleaning clipboard in 5 seconds...")
 	time.Sleep(5 * time.Second)
 	if err != nil {
 		clipboard.WriteAll("")
 	} else {
 		clipboard.WriteAll(before)
 	}
-	fmt.Println("\n...again? or CTRL+C\n")
+	say("\n...again? or CTRL+C\n")
+}
+
+func getString(s *bufio.Scanner) (string, error) {
+	for s.Scan() {
+		return s.Text(), nil
+		break
+	}
+	if err := s.Err(); err != nil {
+		return "", err
+	}
+	return "", nil
+}
+
+func say(s ...interface{}) {
+	if *noTerminal {
+		return
+	}
+
+	fmt.Println(s...)
 }

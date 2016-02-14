@@ -23,6 +23,7 @@ type ScryptParameter struct {
 	KeyLen int
 }
 
+//Generator interface
 type Generator interface {
 	Init(fullname, masterpassword []byte) error
 	Password(site string, version string, templates []string) (string, error)

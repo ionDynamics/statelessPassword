@@ -10,16 +10,17 @@ import (
 )
 
 var (
-	nameEnv = "ID_SLPW_FULLNAME"
-	noEnv   = flag.Bool("noEnv", false, "Set this to true if no environment variables should be used")
+	nameEnv    = "ID_SLPW_FULLNAME"
+	noEnv      = flag.Bool("no-env", false, "Set this to true if no environment variables should be used")
+	noTerminal = flag.Bool("no-terminal", false, "Set this to true if your standard input isn't a terminal")
 )
 
 func main() {
 	flag.Parse()
 
-	r := bufio.NewReader(os.Stdin)
-	fullname := getFullname(r)
-	bytMasterPw := getMasterpassword(r)
+	s := bufio.NewScanner(os.Stdin)
+	fullname := getFullname(s)
+	bytMasterPw := getMasterpassword(s)
 
 	params := make(chan param, 1)
 	pwd := make(chan string, 1)
@@ -42,23 +43,27 @@ func main() {
 	}()
 
 	for {
-		site, ok := getSite(r)
+		site, ok := getSite(s)
 		if !ok {
 			continue
 		}
 
-		version, ok := getVersion(r)
+		version, ok := getVersion(s)
 		if !ok {
 			continue
 		}
 
-		tlps, ok := getTemplates(r)
+		tlps, ok := getTemplates(s)
 		if !ok {
 			continue
 		}
 
 		params <- param{site, version, tlps}
 		returnPw(pwd)
+
+		if *noTerminal {
+			break
+		}
 	}
 }
 
