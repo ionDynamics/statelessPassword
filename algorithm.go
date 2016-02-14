@@ -15,6 +15,7 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
+//ScryptParameter holds all parameters for the scrypt key derivation algorithm
 type ScryptParameter struct {
 	N      int
 	R      int
@@ -36,7 +37,7 @@ type algorithm struct {
 	key            []byte
 }
 
-//New creates and initializes a new Generator
+//New calls NewCustom with preset-determined parameters
 func New(fullname, masterpassword []byte, preset uint8) (Generator, error) {
 	params := ScryptParameter{
 		R:      8,
@@ -70,6 +71,7 @@ func New(fullname, masterpassword []byte, preset uint8) (Generator, error) {
 	return NewCustom(fullname, masterpassword, params)
 }
 
+//NewCustom creates and initializes a new Generator
 func NewCustom(fullname, masterpassword []byte, p ScryptParameter) (Generator, error) {
 	algo := &algorithm{p: p}
 	return algo, algo.Init(fullname, masterpassword)
