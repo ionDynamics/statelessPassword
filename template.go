@@ -1,29 +1,32 @@
 package statelessPassword //import "go.iondynamics.net/statelessPassword"
 
-const V = "AEIOU"
-const C = "BCDFGHJKLMNPQRSTVWXYZ"
-const v = "aeiou"
-const c = "bcdfghjklmnpqrstvwxyz"
-const A = "AEIOUBCDFGHJKLMNPQRSTVWXYZ"
-const a = "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz"
-const n = "0123456789"
-const o = "@&%?,=[]_:-+*$#!'^~;()/."
-const X = "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789!@#$%^&*()"
-const x = X
+var (
+	tplChars = map[rune]string{
+		'V': "AEIOU",
+		'C': "BCDFGHJKLMNPQRSTVWXYZ",
+		'v': "aeiou",
+		'c': "bcdfghjklmnpqrstvwxyz",
+		'A': "AEIOUBCDFGHJKLMNPQRSTVWXYZ",
+		'a': "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz",
+		'n': "0123456789",
+		'o': "@&%?,=[]_:-+*$#!'^~;()/.",
+		'X': "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789@&%?,=[]_:-+*$#!'^~;()/.",
+		'x': "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789@&%?,=[]_:-+*$#!'^~;()/.",
+		'p': "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789",
+	}
 
-const p = "AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789"
+	BillemontMaximumSecurityPasswordTemplates = []string{"anoxxxxxxxxxxxxxxxxx", "axxxxxxxxxxxxxxxxxno"}
+	BillemontLongPasswordTemplates            = []string{"CvcvnoCvcvCvcv", "CvcvCvcvnoCvcv", "CvcvCvcvCvcvno", "CvccnoCvcvCvcv", "CvccCvcvnoCvcv", "CvccCvcvCvcvno", "CvcvnoCvccCvcv", "CvcvCvccnoCvcv", "CvcvCvccCvcvno", "CvcvnoCvcvCvcc", "CvcvCvcvnoCvcc", "CvcvCvcvCvccno", "CvccnoCvccCvcv", "CvccCvccnoCvcv", "CvccCvccCvcvno", "CvcvnoCvccCvcc", "CvcvCvccnoCvcc", "CvcvCvccCvccno", "CvccnoCvcvCvcc", "CvccCvcvnoCvcc", "CvccCvcvCvccno"}
+	BillemontMediumPasswordTemplates          = []string{"CvcnoCvc", "CvcCvcno"}
+	BillemontBasicPasswordTemplates           = []string{"aaanaaan", "aannaaan", "aaannaaa"}
+	BillemontShortPasswordTemplates           = []string{"Cvcn"}
+	BillemontPINTemplates                     = []string{"nnnn"}
 
-var BillemontMaximumSecurityPasswordTemplates = []string{"anoxxxxxxxxxxxxxxxxx", "axxxxxxxxxxxxxxxxxno"}
-var BillemontLongPasswordTemplates = []string{"CvcvnoCvcvCvcv", "CvcvCvcvnoCvcv", "CvcvCvcvCvcvno", "CvccnoCvcvCvcv", "CvccCvcvnoCvcv", "CvccCvcvCvcvno", "CvcvnoCvccCvcv", "CvcvCvccnoCvcv", "CvcvCvccCvcvno", "CvcvnoCvcvCvcc", "CvcvCvcvnoCvcc", "CvcvCvcvCvccno", "CvccnoCvccCvcv", "CvccCvccnoCvcv", "CvccCvccCvcvno", "CvcvnoCvccCvcc", "CvcvCvccnoCvcc", "CvcvCvccCvccno", "CvccnoCvcvCvcc", "CvccCvcvnoCvcc", "CvccCvcvCvccno"}
-var BillemontMediumPasswordTemplates = []string{"CvcnoCvc", "CvcCvcno"}
-var BillemontBasicPasswordTemplates = []string{"aaanaaan", "aannaaan", "aaannaaa"}
-var BillemontShortPasswordTemplates = []string{"Cvcn"}
-var BillemontPINTemplates = []string{"nnnn"}
-
-var Alphanumeric8Templates = []string{"pppppppp"}
-var Alphanumeric10Templates = []string{"pppppppppp"}
-var Alphanumeric16Templates = []string{"pppppppppppppppp"}
-var Alphanumeric20Templates = []string{"pppppppppppppppppppp"}
-var Printable16Templates = []string{"xxxxxxxxxxxxxxxx"}
-var Printable25Templates = []string{"xxxxxxxxxxxxxxxxxxxxxxxxx"}
-var Printable32Templates = []string{"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+	Alphanumeric8Templates  = []string{"pppppppp"}
+	Alphanumeric10Templates = []string{"pppppppppp"}
+	Alphanumeric16Templates = []string{"pppppppppppppppp"}
+	Alphanumeric20Templates = []string{"pppppppppppppppppppp"}
+	Printable16Templates    = []string{"xxxxxxxxxxxxxxxx"}
+	Printable25Templates    = []string{"xxxxxxxxxxxxxxxxxxxxxxxxx"}
+	Printable32Templates    = []string{"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+)

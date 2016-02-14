@@ -5,67 +5,67 @@ import (
 )
 
 func Example_TemplateChars_V() {
-	fmt.Println(V)
+	fmt.Println(tplChars['V'])
 	// Output:
 	// AEIOU
 }
 
 func Example_TemplateChars_C() {
-	fmt.Println(C)
+	fmt.Println(tplChars['C'])
 	// Output:
 	// BCDFGHJKLMNPQRSTVWXYZ
 }
 
 func Example_TemplateChars_c() {
-	fmt.Println(c)
+	fmt.Println(tplChars['c'])
 	// Output:
 	// bcdfghjklmnpqrstvwxyz
 }
 
 func Example_TemplateChars_v() {
-	fmt.Println(v)
+	fmt.Println(tplChars['v'])
 	// Output:
 	// aeiou
 }
 
 func Example_TemplateChars_A() {
-	fmt.Println(A)
+	fmt.Println(tplChars['A'])
 	// Output:
 	// AEIOUBCDFGHJKLMNPQRSTVWXYZ
 }
 
 func Example_TemplateChars_a() {
-	fmt.Println(a)
+	fmt.Println(tplChars['a'])
 	// Output:
 	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz
 }
 
 func Example_TemplateChars_n() {
-	fmt.Println(n)
+	fmt.Println(tplChars['n'])
 	// Output:
 	// 0123456789
 }
 
 func Example_TemplateChars_o() {
-	fmt.Println(o)
+	fmt.Println(tplChars['o'])
 	// Output:
 	// @&%?,=[]_:-+*$#!'^~;()/.
 }
 
 func Example_TemplateChars_X() {
-	fmt.Println(X)
+	fmt.Println(tplChars['X'])
 	// Output:
-	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789!@#$%^&*()
+	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789@&%?,=[]_:-+*$#!'^~;()/.
 }
 
 func Example_TemplateChars_x() {
-	fmt.Println(x)
+	fmt.Println(tplChars['x'])
 	// Output:
-	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789!@#$%^&*()
+	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789@&%?,=[]_:-+*$#!'^~;()/.
 }
 
 func Example_TemplateChars_p() {
-	fmt.Println(p)
+	fmt.Println(tplChars['p'])
 	// Output:
 	// AEIOUaeiouBCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz0123456789
 }

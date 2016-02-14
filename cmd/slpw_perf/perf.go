@@ -14,7 +14,7 @@ func main() {
 	for i := 0; i < max; i++ {
 		fmt.Println("Test", i+1, "of", max, "begins")
 		start := time.Now()
-		algo := statelessPassword.New([]byte("Example Full Name"), []byte("example password"), uint8(i))
+		algo, _ := statelessPassword.New([]byte("Example Full Name"), []byte("example password"), uint8(i))
 		algo.Password("example.org", "1", statelessPassword.Printable32Templates)
 		fmt.Println(time.Since(start), "\t", "Variant code:", i, "\n")
 	}

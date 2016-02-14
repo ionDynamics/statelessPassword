@@ -3,129 +3,128 @@
 package statelessPassword //import "go.iondynamics.net/statelessPassword"
 
 import (
+	"bytes"
 	"crypto/hmac"
-	"crypto/sha256"
+	cRand "crypto/rand"
 	"crypto/sha512"
 	"fmt"
+	"math/big"
+	"math/rand"
 
 	"golang.org/x/crypto/scrypt"
 )
 
-type Algorithm struct {
-	variant        uint8
+type ScryptParameter struct {
+	N      int
+	R      int
+	P      int
+	KeyLen int
+}
+
+type Generator interface {
+	Init(fullname, masterpassword []byte) error
+	Password(site string, version string, templates []string) (string, error)
+}
+
+type algorithm struct {
+	init           bool
 	fullname       []byte
 	masterpassword []byte
-	n              int
-	r              int
-	p              int
-	keyLen         int
+	p              ScryptParameter
 	saltPrefix     []byte
 	key            []byte
 }
 
-//New initializes the algorithm with the provided input and precalculates the masterkey
-func New(fullname, masterpassword []byte, variant uint8) *Algorithm {
-	algo := &Algorithm{
-		variant:    variant,
-		fullname:   fullname,
-		r:          8,
-		keyLen:     128,
-		p:          4,
-		saltPrefix: []byte("go.iondynamics.net/statelessPassword"),
+//New creates and initializes a new Generator
+func New(fullname, masterpassword []byte, preset uint8) (Generator, error) {
+	params := ScryptParameter{
+		R:      8,
+		KeyLen: 8096,
+		P:      4,
 	}
 
-	switch variant {
+	switch preset {
 	case 0:
-		algo.n = 32768
-		algo.p = 2
-		algo.keyLen = 64
-		algo.saltPrefix = []byte("com.lyndir.masterpassword")
+		params.N = 32768
+		params.P = 1
 	case 1:
-		algo.n = 32768
-		algo.p = 2
+		params.N = 32768
+		params.P = 2
 	case 2:
-		algo.n = 32768
+		params.N = 32768
 	case 3:
-		algo.n = 65536
+		params.N = 65536
 	case 4:
-		algo.n = 131072
+		params.N = 131072
 	case 5:
-		algo.n = 131072
-		algo.r = 12
+		params.N = 131072
+		params.R = 12
 	case 6:
-		algo.n = 1048576
-		algo.p = 1
+		params.N = 1048576
+		params.P = 1
 	case 7:
-		algo.n = 1048576
+		params.N = 1048576
 	}
+
+	algo := &algorithm{p: params}
+	return algo, algo.Init(fullname, masterpassword)
+}
+
+//Init initializes the algorithm with the provided input and precalculates the masterkey
+func (algo *algorithm) Init(fullname, masterpassword []byte) error {
+	algo.fullname = fullname
+	algo.saltPrefix = []byte("go.iondynamics.net/statelessPassword")
 
 	var err error
-	algo.key, err = scrypt.Key(masterpassword, append(algo.saltPrefix, []byte(fmt.Sprint(uint32(len(algo.fullname)), algo.fullname))...), algo.n, algo.r, algo.p, algo.keyLen)
+	algo.key, err = scrypt.Key(masterpassword,
+		append(algo.saltPrefix, []byte(fmt.Sprint(len(algo.fullname), algo.fullname))...),
+		algo.p.N,
+		algo.p.R,
+		algo.p.P,
+		algo.p.KeyLen)
 	if err != nil {
-		return nil
+		return err
 	}
 
-	return algo
+	algo.init = true
+
+	return err
 }
 
 //Password returns the password for the given website, password version and templates
-func (algo *Algorithm) Password(site string, version string, templates []string) (string, error) {
+func (algo *algorithm) Password(site string, version string, templates []string) (string, error) {
+	if !algo.init {
+		return "", fmt.Errorf("%s", "not initialized")
+	}
+
 	if len(templates) < 1 {
 		return "", fmt.Errorf("%s", "invalid template")
 	}
 
 	h := hmac.New(sha512.New, algo.key)
-	if algo.variant == 0 {
-		h = hmac.New(sha256.New, algo.key)
-	}
 
-	_, err := h.Write([]byte(fmt.Sprint(string(algo.saltPrefix), uint32(len(site)), site, version)))
+	_, err := h.Write([]byte(fmt.Sprint(string(algo.saltPrefix), len(site), site, version)))
 	if err != nil {
 		return "", err
 	}
-	seed := h.Sum(nil)
 
-	template := templates[uint32(seed[0])%uint32(len(templates))]
+	seed, err := cRand.Int(bytes.NewReader(h.Sum(nil)), big.NewInt(int64(^uint(0)>>1)))
+	if err != nil {
+		return "", fmt.Errorf("%s", err)
+	}
 
+	prng := rand.New(rand.NewSource(seed.Int64()))
+	template := templates[prng.Intn(len(templates))]
 	password := []byte(template)
 
 	for i, tplRune := range template {
-		var passchars string
-		switch tplRune {
-		case 'V':
-			passchars = V
-		case 'C':
-			passchars = C
-		case 'v':
-			passchars = v
-		case 'c':
-			passchars = c
-		case 'A':
-			passchars = A
-		case 'a':
-			passchars = a
-		case 'n':
-			passchars = n
-		case 'o':
-			passchars = o
-		case 'X':
-			passchars = X
-		case 'x':
-			passchars = x
-		case 'p':
-			passchars = p
-		default:
+		passchars, ok := tplChars[tplRune]
+		if !ok {
 			return "", fmt.Errorf("%s", "invalid template")
 		}
 
-		if i+1 < len(seed) {
-			password[i] = passchars[uint32(seed[i+1])%uint32(len(passchars))]
-		} else {
-			password[i] = passchars[0]
-		}
-
+		password[i] = passchars[prng.Intn(len(passchars))]
 	}
 
 	return string(password), err
-
 }
