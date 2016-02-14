@@ -116,7 +116,7 @@ func (algo *algorithm) Password(site string, version string, templates []string)
 
 	seed, err := cRand.Int(bytes.NewReader(h.Sum(nil)), big.NewInt(math.MaxInt64))
 	if err != nil {
-		return "", fmt.Errorf("%s", err)
+		return "", err
 	}
 
 	prng := rand.New(rand.NewSource(seed.Int64()))
