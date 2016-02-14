@@ -8,6 +8,7 @@ import (
 	cRand "crypto/rand"
 	"crypto/sha512"
 	"fmt"
+	"math"
 	"math/big"
 	"math/rand"
 
@@ -113,7 +114,7 @@ func (algo *algorithm) Password(site string, version string, templates []string)
 		return "", err
 	}
 
-	seed, err := cRand.Int(bytes.NewReader(h.Sum(nil)), big.NewInt(int64(^uint(0)>>1)))
+	seed, err := cRand.Int(bytes.NewReader(h.Sum(nil)), big.NewInt(math.MaxInt64))
 	if err != nil {
 		return "", fmt.Errorf("%s", err)
 	}
