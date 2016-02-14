@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	nameEnv string = "ID_SLPW_FULLNAME"
-	noEnv   *bool  = flag.Bool("noEnv", false, "Set this to true if no environment variables should be used")
+	nameEnv = "ID_SLPW_FULLNAME"
+	noEnv   = flag.Bool("noEnv", false, "Set this to true if no environment variables should be used")
 )
 
 func main() {

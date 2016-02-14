@@ -67,7 +67,11 @@ func New(fullname, masterpassword []byte, preset uint8) (Generator, error) {
 		params.N = 1048576
 	}
 
-	algo := &algorithm{p: params}
+	return NewCustom(fullname, masterpassword, params)
+}
+
+func NewCustom(fullname, masterpassword []byte, p ScryptParameter) (Generator, error) {
+	algo := &algorithm{p: p}
 	return algo, algo.Init(fullname, masterpassword)
 }
 

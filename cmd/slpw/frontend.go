@@ -25,14 +25,14 @@ func getFullname(r *bufio.Reader) string {
 		var err error
 		fullname, err = r.ReadString('\n')
 		if err != nil {
-			fmt.Errorf("%s", err)
+			fmt.Println(err)
 			os.Exit(1)
 		}
 
 		if !*noEnv {
 			err = os.Setenv(nameEnv, fullname)
 			if err != nil {
-				fmt.Errorf("%s", err)
+				fmt.Println(err)
 				os.Exit(1)
 			}
 		}
@@ -47,7 +47,7 @@ func getMasterpassword(r *bufio.Reader) []byte {
 	fmt.Println("Enter Master Password:")
 	bytMasterPw, err := terminal.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
-		fmt.Errorf("%s", err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 	return bytMasterPw
@@ -57,7 +57,7 @@ func getSite(r *bufio.Reader) (string, bool) {
 	fmt.Println("Enter Site:")
 	site, err := r.ReadString('\n')
 	if err != nil {
-		fmt.Errorf("%s", err)
+		fmt.Println(err)
 		return "", false
 	}
 
@@ -68,7 +68,7 @@ func getVersion(r *bufio.Reader) (string, bool) {
 	fmt.Println("Enter Password Version (Default 1) :")
 	version, err := r.ReadString('\n')
 	if err != nil {
-		fmt.Errorf("%s", err)
+		fmt.Println(err)
 		return "", false
 	}
 	version = strings.TrimSpace(version)
