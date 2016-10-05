@@ -69,32 +69,35 @@ func New(fullname, masterpassword []byte, preset uint8) (Generator, error) {
 		params.N = 1048576
 	}
 
-	return NewCustom(fullname, masterpassword, params)
+	return NewCustom(fullname, masterpassword, []byte("go.iondynamics.net/statelessPassword"), params)
 }
 
 //NewCustom creates and initializes a new Generator
-func NewCustom(fullname, masterpassword []byte, p ScryptParameter) (Generator, error) {
-	algo := &algorithm{p: p}
+func NewCustom(fullname, masterpassword, saltPrefix []byte, p ScryptParameter) (Generator, error) {
+	algo := NewUninitalized(fullname, saltPrefix, p)
 	return algo, algo.Init(fullname, masterpassword)
+}
+
+//NewUninitalized returns an algorithm without calling it's Init function
+func NewUninitalized(fullname, saltPrefix []byte, p ScryptParameter) *algorithm {
+	return &algorithm{
+		p:          p,
+		saltPrefix: saltPrefix,
+		fullname:   fullname,
+	}
+}
+
+//InitWithPrecalculatedKey initializes the algorithm with the provided input
+func (algo *algorithm) InitWithPrecalculatedKey(fullname, key []byte) {
+	algo.fullname = fullname
+	algo.key = key
+	algo.init = true
 }
 
 //Init initializes the algorithm with the provided input and precalculates the masterkey
 func (algo *algorithm) Init(fullname, masterpassword []byte) error {
 	algo.fullname = fullname
-	algo.saltPrefix = []byte("go.iondynamics.net/statelessPassword")
-
-	b := bytes.Buffer{}
-	b.Write(algo.saltPrefix)
-	b.WriteString(fmt.Sprint(len(algo.fullname)))
-	b.Write(algo.fullname)
-
-	var err error
-	algo.key, err = scrypt.Key(masterpassword,
-		b.Bytes(),
-		algo.p.N,
-		algo.p.R,
-		algo.p.P,
-		algo.p.KeyLen)
+	err := algo.CalculateKey(masterpassword)
 	if err != nil {
 		return err
 	}
@@ -102,6 +105,29 @@ func (algo *algorithm) Init(fullname, masterpassword []byte) error {
 	algo.init = true
 
 	return err
+}
+
+//CalculateKey calculates the scrypt key
+func (algo *algorithm) CalculateKey(masterpassword []byte) error {
+	var err error
+	algo.key, err = scrypt.Key(masterpassword,
+		algo.ScryptSalt(),
+		algo.p.N,
+		algo.p.R,
+		algo.p.P,
+		algo.p.KeyLen)
+
+	return err
+}
+
+//ScryptSalt returns the salt used by Scrypt
+func (algo *algorithm) ScryptSalt() []byte {
+	b := bytes.Buffer{}
+	b.Write(algo.saltPrefix)
+	b.WriteString(fmt.Sprint(len(algo.fullname)))
+	b.Write(algo.fullname)
+
+	return b.Bytes()
 }
 
 //Password returns the password for the given website, password version and templates
